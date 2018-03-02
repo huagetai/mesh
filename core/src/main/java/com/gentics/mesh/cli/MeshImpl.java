@@ -94,12 +94,13 @@ public class MeshImpl implements Mesh {
 	}
 
 	@Override
-	public void run() throws Exception {
+	public Mesh run() throws Exception {
 		run(true);
+		return this;
 	}
 
 	@Override
-	public void run(boolean block) throws Exception {
+	public Mesh run(boolean block) throws Exception {
 		checkSystemRequirements();
 
 		setupKeystore(options);
@@ -147,6 +148,7 @@ public class MeshImpl implements Mesh {
 		if (block) {
 			dontExit();
 		}
+		return this;
 	}
 
 	private void setupKeystore(MeshOptions options) throws Exception {
@@ -267,7 +269,8 @@ public class MeshImpl implements Mesh {
 		}));
 	}
 
-	private void dontExit() throws InterruptedException {
+	@Override
+	public void dontExit() throws InterruptedException {
 		latch.await();
 	}
 
