@@ -72,6 +72,7 @@ import com.gentics.mesh.parameter.LinkType;
 import com.gentics.mesh.parameter.SchemaUpdateParameters;
 import com.gentics.mesh.parameter.impl.NodeParametersImpl;
 import com.gentics.mesh.parameter.impl.VersioningParametersImpl;
+import com.gentics.mesh.plugin.factory.PluginVerticleFactory;
 import com.gentics.mesh.rest.client.MeshRequest;
 import com.gentics.mesh.rest.client.MeshRestClient;
 import com.gentics.mesh.search.TrackingSearchProvider;
@@ -127,6 +128,10 @@ public interface TestHelperMethods {
 
 	default BootstrapInitializer boot() {
 		return MeshInternal.get().boot();
+	}
+
+	default PluginVerticleFactory pluginFactory() {
+		return MeshInternal.get().pluginFactory();
 	}
 
 	default TestDataProvider data() {
