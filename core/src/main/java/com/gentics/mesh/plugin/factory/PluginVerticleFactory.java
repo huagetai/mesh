@@ -1,5 +1,7 @@
 package com.gentics.mesh.plugin.factory;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,6 +41,12 @@ public class PluginVerticleFactory implements VerticleFactory {
 	private static final String DEFAULT_MAVEN_LOCAL = USER_HOME + FILE_SEP + ".m2" + FILE_SEP + "repository";
 	private static final String DEFAULT_MAVEN_REMOTES = "https://repo.maven.apache.org/maven2/ https://oss.sonatype.org/content/repositories/snapshots/";
 
+	private static final String PLUGIN_EXTENSION = ".zip";
+
+	public static enum PluginTypes {
+		FILE, FOLDER, MAVEN
+	};
+
 	private String pluginDir;
 
 	private Vertx vertx;
@@ -69,8 +77,52 @@ public class PluginVerticleFactory implements VerticleFactory {
 	}
 
 	@Override
+	public boolean requiresResolve() {
+		return true;
+	}
+
+	@Override
 	public void resolve(String identifier, DeploymentOptions deploymentOptions, ClassLoader classLoader, Future<String> resolution) {
 		String identifierNoPrefix = VerticleFactory.removePrefix(identifier);
+		PluginTypes type = resolvePluginType(identifierNoPrefix);
+		if (type == PluginTypes.MAVEN) {
+			resolveViaMaven(identifierNoPrefix);
+		}
+		resolution.complete("123");
+	}
+
+	private PluginTypes resolvePluginType(String identifier) {
+		File pluginFile = getPluginFile(identifier);
+		log.debug("Trying to load plugin file {" + pluginFile.getAbsolutePath() + "}");
+		if (pluginFile.exists() && pluginFile.isFile()) {
+			log.debug("Found plugin file {" + pluginFile.getAbsolutePath() + "}");
+			return PluginTypes.FILE;
+		} else {
+			log.debug("Plugin file {" + pluginFile + "} not found.");
+		}
+
+		File pluginSourceFolder = getPluginSourceFolder(identifier);
+		log.debug("Trying to find plugin source {" + pluginSourceFolder.getAbsolutePath() + "}");
+		if (pluginSourceFolder.exists() && pluginSourceFolder.isDirectory()) {
+			log.debug("Found source folder {" + pluginSourceFolder + "}");
+			return PluginTypes.FOLDER;
+		} else {
+			log.debug("Plugin source folder not found {" + pluginSourceFolder.getAbsolutePath() + "}");
+		}
+
+		// Finally try to resolve the plugin using maven
+		return PluginTypes.MAVEN;
+	}
+
+	private File getPluginSourceFolder(String identifier) {
+		return Paths.get(identifier).toAbsolutePath().normalize().toFile();
+	}
+
+	private File getPluginFile(String identifier) {
+		return Paths.get(pluginDir, identifier + PLUGIN_EXTENSION).toAbsolutePath().normalize().toFile();
+	}
+
+	private void resolveViaMaven(String identifierNoPrefix) {
 		String coordsString = identifierNoPrefix;
 		String serviceName = null;
 		int pos = identifierNoPrefix.lastIndexOf("::");
@@ -91,15 +143,15 @@ public class PluginVerticleFactory implements VerticleFactory {
 			throw new IllegalArgumentException("Cannot find module " + coordsString + ". Maybe repository URL is invalid?");
 		}
 
-		for(Artifact id : artifacts) {
+		for (Artifact id : artifacts) {
 			System.out.println(id.getArtifactId());
 		}
-
 		System.out.println("Resolve");
 	}
 
 	@Override
 	public Verticle createVerticle(String verticleName, ClassLoader classLoader) throws Exception {
+		//type = resol
 		System.out.println("Jow");
 		// 1. Check local plugin folder for zip
 		// 2. Check local plugin folder for extracted plugin
