@@ -1100,7 +1100,7 @@ ____
 
 icon:plus[] The missing *availableLanguages* and *defaultLanguage* parameters have been added to the *mesh-ui-config.js* file. Previously no language was configured which removed the option to translate contents.
 
-icon:plus[] Image Property Support - The binary field will not automatically contain properties for image *width*, image *height* and the main *dominant color* in the image.
+icon:plus[] Image Property Support - The binary field will now automatically contain properties for image *width*, image *height* and the main *dominant color* in the image.
 
 icon:plus[] API Version endpoint -  It is now possible to load the mesh version information via a `GET` request to `/api/v1/`.
 
