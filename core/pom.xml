@@ -56,6 +56,11 @@
 			<artifactId>vertx-maven-service-factory</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.gentics.vertx</groupId>
+			<artifactId>vertx-filesystem-service-factory</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-http-service-factory</artifactId>
 			<version>${vertx.version}</version>
