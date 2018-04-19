@@ -9,6 +9,7 @@ import com.gentics.mesh.plugin.PluginManifest;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.ext.web.Router;
 
 /**
  * Abstract implementation for a Gentics Mesh plugin verticle.
@@ -40,12 +41,12 @@ public abstract class AbstractPluginVerticle extends AbstractVerticle implements
 
 	@Override
 	public void start(Future<Void> startFuture) throws Exception {
-		registerExtensions();
+		PluginManager.register(this);
 		startFuture.complete();
 	}
 
 	/**
 	 * Method which will register the extensions of the plugin.
 	 */
-	public abstract void registerExtensions();
+	public abstract void registerExtensions(Router router);
 }
