@@ -3,6 +3,7 @@ package com.gentics.mesh;
 
 import com.gentics.mesh.etc.MeshCustomLoader;
 import com.gentics.mesh.etc.config.MeshOptions;
+import com.gentics.mesh.plugin.Plugin;
 
 import io.vertx.core.ServiceHelper;
 import io.vertx.core.Vertx;
@@ -158,5 +159,14 @@ public interface Mesh {
 	MetricsService metrics();
 
 	void dontExit() throws InterruptedException;
+
+	/**
+	 * Deploy the given plugin.
+	 * 
+	 * @param plugin
+	 */
+	default void deployPlugin(Plugin plugin) {
+		getVertx().deployVerticle(plugin);
+	}
 
 }
